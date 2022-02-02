@@ -7,11 +7,11 @@ import { openDB } from 'idb';
 const initdb = async () =>
   openDB('jateDb', 1, {
     upgrade(db) {
-      if (db.objectStoreNames.contains('jateDb')) {
+      if (db.objectStoreNames.contains('jateStore')) {
         console.log('jate database already exists');
         return;
       }
-      db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
+      db.createObjectStore('jateStore', { keyPath: 'id', autoIncrement: true });
       console.log('jate database created');
     },
   });
@@ -28,9 +28,9 @@ export const putDb = async (content) => {
 
     const tx = jateDb.transaction('jateDb', 'readwrite');
 
-    const store = tx.objectStore('jate');
+    const store = tx.objectStore('jateStore');
 
-    const request = store.add({content});
+    const request = store.add({id: 1, id: content});
 
     const result = await request;
 
@@ -55,15 +55,15 @@ export const getDb = async () => {
 
     const tx = jateDb.transaction('jateDb', 'readonly');
 
-    const store = tx.objectStore('jate');
+    const store = tx.objectStore('jateStore');
 
-    const request = store.getAll();
+    const request = store.get(1);
 
     const result = await request;
 
     console.log('result.value', result);
 
-    return result;
+    return result?.value;
 
   } catch (error) {
     
